@@ -1,9 +1,11 @@
 :root {
     --navbar-color: rgb(22, 22, 22);
-    --navbar-text: rgb(164, 164, 164);
+    --navbar-text: #d3d3d3;
     --navbar-icon: rgb(153, 96, 51);
     --navbar-icon-hover: rgb(245, 118, 26);
     --slider-background: #d3d3d3;
+    --bar-color: rgb(245, 118, 26);
+    --bar-background: #d3d3d3;
 }
 
 body {
@@ -101,7 +103,7 @@ body {
 
 #bars {
     grid-area: bars;
-    background-color: pink;
+    background-color: var(--bar-background, pink);
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -110,7 +112,7 @@ body {
 }
 
 .bar {
-    background-color: aqua;
+    background-color: var(--bar-color, aqua);
 }
 
 .slider-container {
