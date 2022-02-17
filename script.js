@@ -53,11 +53,26 @@ function getRndInteger(min, max) {
 
 $("#sort-button").click(function() {
     let algorithm = $("#sort-picker").val();
+    const bars = getBarsHeights();
+
     switch(algorithm) {
         case "Bubble sort":
-            alert("Bubble sort");
+            bubbleSort(bars);
             break;
         default:
             break;
     }
 });
+
+function getBarsHeights() {
+    let barsHeight = [];
+    $(".bar").each(function() {
+        barsHeight.push($(this).height());
+    });
+
+    return barsHeight;
+}
+
+function bubbleSort(bars) {
+
+};
