@@ -1,0 +1,170 @@
+:root {
+    --navbar-color: rgb(22, 22, 22);
+    --navbar-text: #d3d3d3;
+    --navbar-icon: rgb(153, 96, 51);
+    --navbar-icon-hover: rgb(245, 118, 26);
+    --slider-background: #d3d3d3;
+    --bar-color: rgb(245, 118, 26);
+    --bar-background: #d3d3d3;
+}
+
+body {
+    font-size: 1.5em;
+    font-family: 'Cairo', sans-serif;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow-y: hidden;
+}
+
+.navbar {
+    position: fixed;
+    min-width: 100%;
+    min-height: 2.5em;
+    grid-area: navbar;
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    column-gap: 1.25%;
+    background-color: var(--navbar-color, gray);
+    color: var(--navbar-text, white);
+    z-index: 1;
+}
+
+.navbar .icon {
+    margin: 0 0 0 1.25%;
+    color: var(--navbar-icon, orange);
+}
+
+.navbar .text {
+    font-weight: 500;
+}
+
+.navbar .icon:hover {
+    color: var(--navbar-icon-hover, orange);
+}
+
+.navbar .text:hover {
+    color: white;
+}
+
+#sort-picker {
+    margin-right: 1.25%;
+    border: none;
+    border-color: transparent;
+    border-radius: 5px;
+    height: 2.7em;
+    width: 12em;
+    text-indent: 3px;
+    font-family: 'Cairo', sans-serif;
+}
+
+#sort-picker > option {
+    font-size: 1.1em;
+    font-family: 'Cairo', sans-serif;
+    border-radius: 5px;
+}
+
+.navbar-button {
+    margin-left: auto;
+    background-color: var(--navbar-icon, orange);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    height: 2.7em;
+    width: 5.5em;
+}
+
+.navbar-button > span {
+    font-size: 1.3em;
+    font-family: 'Cairo', sans-serif;
+}
+
+.navbar-button:hover {
+    background-color: var(--navbar-icon-hover, orange);
+}
+
+@media screen and (max-width: 700px) {
+    .text {
+        display: none;
+    }
+}
+
+.container {
+    display: grid;
+    grid-template-rows: 2.5em min-content;
+    grid-template-areas: 
+        "navbar"
+        "bars";
+}
+
+#bars {
+    grid-area: bars;
+    background-color: var(--bar-background, pink);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+}
+
+.bar {
+    background-color: var(--bar-color, aqua);
+}
+
+.slider-container {
+    width: 7em;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 5%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 9em;
+    height: 0.9em;
+    margin: 0;
+    background: var(--slider-background);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    border-radius: 5px;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--navbar-icon-hover);
+    cursor: pointer;
+    border-radius: 50%;
+    border-color: transparent;
+}
+
+.slider::-moz-range-thumb {
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--navbar-icon-hover);
+    cursor: pointer;
+    border-radius: 50%;
+    border-color: transparent;
+}
+
+.slider-value {
+    margin-bottom: 3px;
+}
+
+.slider-value:hover {
+    color: white;
+}
