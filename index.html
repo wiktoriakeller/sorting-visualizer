@@ -10,21 +10,24 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>            
-        <nav class="navbar">
-            <div class="icon"><i class="fas fa-bars"></i></div>
-            <span class="text">SORT VISUALIZER</span>
-            <button class="navbar-button"><span>SORT!</span></button>
-            <div class="slider-container">
-                <input type="range" min="5" max="1000" value="500" class="slider" id="sort-range">
-                <span class="slider-value" id="sort-slider-value"></span>
+        <div class="container">
+            <nav class="navbar" id="main-navbar">
+                <div class="icon"><i class="fas fa-bars"></i></div>
+                <span class="text">SORT VISUALIZER</span>
+                <button class="navbar-button"><span>SORT!</span></button>
+                <div class="slider-container">
+                    <input type="range" min="5" max="500" value="250" class="slider" id="sort-range">
+                    <span class="slider-value" id="sort-slider-value"></span>
+                </div>
+                <select name="sort-picker" id="sort-picker">
+                    <option value="Pick algorithm" selected disabled>Pick algorithm</option>
+                    <option value="Bubble sort">Bubble sort</option>
+                </select>
+            </nav>
+            
+            <div id="bars">
             </div>
-            <select name="sort-picker" id="sort-picker">
-                <option value="Pick algorithm" selected>Pick algorithm</option>
-                <option value="Bubble sort">Bubble sort</option>
-            </select>
-        </nav>
-        
-        <canvas id="canvas"></canvas>
+        </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="script.js" async defer></script>
