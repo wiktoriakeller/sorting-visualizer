@@ -1,3 +1,5 @@
+const container = document.getElementById("bars");
+
 $(document).ready(function() {
     setSortSliderVal();
     resize();
@@ -64,19 +66,38 @@ $("#sort-button").click(function() {
 });
 
 function swap(arr, i, j) {
-    let tmp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = tmp;
+    return new Promise(resolve => {
+        let tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+
+        const style1 = window.getComputedStyle(arr[i]);
+        const style2 = window.getComputedStyle(arr[j]);
+
+        const transform1 = style1.getPropertyValue("transform");
+        const transform2 = style2.getPropertyValue("transform");
+
+        arr[i].style.transform = transform2;
+        arr[j].style.transform = transform1;
+
+        window.requestAnimationFrame(function() {
+            setTimeout(() => {
+                container.insertBefore(arr[j], arr[i]);
+                resolve();
+            }, 250);
+        });
+    });
 }
 
-function bubbleSort() {
-    const bars = $(".bar");
+async function bubbleSort(delay = 100) {
+    const bars = document.getElementsByClassName("bar");
     for(let i = 0; i < bars.length - 1; i++) {
         for(let j = 0; j < bars.length - 1; j++) {
-            let barVal = $(bars[j]).height();
-            let nextBarVal = $(bars[j + 1]).height();
+            let barVal = bars[j].clientHeight;
+            let nextBarVal = bars[j + 1].clientHeight;
+
             if(barVal > nextBarVal) {
-                swap(bars, j, j + 1);
+                await swap(bars, j, j + 1);
             }
         }
     }
