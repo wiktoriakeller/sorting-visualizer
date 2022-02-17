@@ -50,3 +50,14 @@ function resize() {
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
+
+$("#sort-button").click(function() {
+    let algorithm = $("#sort-picker").val();
+    switch(algorithm) {
+        case "Bubble sort":
+            alert("Bubble sort");
+            break;
+        default:
+            break;
+    }
+});
