@@ -71,15 +71,16 @@ function setControls() {
 }
  
 $("#sort-button").click(function() {
+    let algorithm = $("#sort-picker").val();
+
     if(sortClicked) {
         sortClicked = false;
     }
-    else {
+    else if(algorithm != null) {
         sortClicked = true;
         $("#sort-button span").text("STOP!");
         $("#sort-range").prop("disabled", true);
 
-        let algorithm = $("#sort-picker").val();
         const bars = document.getElementsByClassName("bar");
         resetBars(bars);
 
