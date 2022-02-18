@@ -2,6 +2,9 @@ const sortedBarColor = "#f5761a";
 const unsortedBarColor = "#ddb12c";
 const normalBarColor = "#996033";
 
+let sortClicked = false;
+let barsCopy = null;
+
 $(document).ready(function() {
     setSortSliderVal();
     resize();
@@ -13,7 +16,7 @@ function setSortSliderVal() {
     let sortRangeVal = $("#sort-range").val();
     $("#sort-slider-value").html(sortRangeVal);
     
-    let minHeight = 1;
+    let minHeight = 5;
     let maxHeight = 99;
 
     const bars = document.getElementById("bars");
@@ -55,20 +58,38 @@ function getRandomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
-$("#sort-button").click(function() {
-    let algorithm = $("#sort-picker").val();
-    const bars = document.getElementsByClassName("bar");
-
+function resetBars(bars) {
     for(let i = 0; i < bars.length; i++) {
         bars[i].style.background = normalBarColor;
     }
+}
 
-    switch(algorithm) {
-        case "Bubble sort":
-            bubbleSort(bars);
-            break;
-        default:
-            break;
+function setControls() {
+    $("#sort-range").prop("disabled", false);
+    $("#sort-button span").text("SORT!");
+    sortClicked = false;
+}
+ 
+$("#sort-button").click(function() {
+    if(sortClicked) {
+        sortClicked = false;
+    }
+    else {
+        sortClicked = true;
+        $("#sort-button span").text("STOP!");
+        $("#sort-range").prop("disabled", true);
+
+        let algorithm = $("#sort-picker").val();
+        const bars = document.getElementsByClassName("bar");
+        resetBars(bars);
+
+        switch(algorithm) {
+            case "Bubble sort":
+                bubbleSort(bars, setControls);
+                break;
+            default:
+                break;
+        }
     }
 });
 
@@ -97,9 +118,17 @@ function swap(arr, i, j) {
     });
 }
 
-async function bubbleSort(bars, delay = 100) {
+async function bubbleSort(bars, callback, delay = 100) {
+    let aborted = false;
+    let barsCopy = [...bars];
+
     for(let i = 0; i < bars.length - 1; i++) {
         for(let j = 0; j < bars.length - i - 1; j++) {
+            if(sortClicked === false) {
+                aborted = true;
+                break;
+            }
+
             let barVal = bars[j].clientHeight;
             let nextBarVal = bars[j + 1].clientHeight;
 
@@ -120,8 +149,20 @@ async function bubbleSort(bars, delay = 100) {
             bars[j + 1].style.background = normalBarColor;
         }
 
+        if(aborted) {
+            break;
+        }
+
         bars[bars.length - i - 1].style.background = sortedBarColor;
     }
 
-    bars[0].style.background = sortedBarColor;
+    if(aborted) {
+        resetBars(barsCopy);
+        $("#bars").html(barsCopy);
+    }
+    else {
+        bars[0].style.background = sortedBarColor;
+    }
+
+    callback();
 };
