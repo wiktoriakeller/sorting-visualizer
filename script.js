@@ -57,11 +57,15 @@ function getRandomInteger(min, max) {
 
 $("#sort-button").click(function() {
     let algorithm = $("#sort-picker").val();
+    const bars = document.getElementsByClassName("bar");
 
+    for(let i = 0; i < bars.length; i++) {
+        bars[i].style.background = normalBarColor;
+    }
 
     switch(algorithm) {
         case "Bubble sort":
-            bubbleSort();
+            bubbleSort(bars);
             break;
         default:
             break;
@@ -93,9 +97,7 @@ function swap(arr, i, j) {
     });
 }
 
-async function bubbleSort(delay = 100) {
-    const bars = document.getElementsByClassName("bar");
-
+async function bubbleSort(bars, delay = 100) {
     for(let i = 0; i < bars.length - 1; i++) {
         for(let j = 0; j < bars.length - i - 1; j++) {
             let barVal = bars[j].clientHeight;
