@@ -1,14 +1,22 @@
 const sortedBarColor = "#f5761a";
 const unsortedBarColor = "#ddb12c";
 const normalBarColor = "#996033";
+const maxSpeed = 500;
 
 let sortClicked = false;
-let barsCopy = null;
 
 $(document).ready(function() {
+    setSpeedSliderVal();
     setSortSliderVal();
     resize();
 });
+
+$(document).on("input", "#sort-speed", setSpeedSliderVal);
+
+function setSpeedSliderVal() {
+    let sortSpeedVal = $("#sort-speed").val();
+    $("#sort-speed-value").html(sortSpeedVal);
+}
 
 $(document).on("input", "#sort-range", setSortSliderVal);
 
@@ -109,17 +117,18 @@ function swap(arr, i, j) {
 
         arr[i].style.transform = transform2;
         arr[j].style.transform = transform1;
+        let speed = $("#sort-speed").val();
 
         window.requestAnimationFrame(function() {
             setTimeout(() => {
                 container.insertBefore(arr[j], arr[i]);
                 resolve();
-            }, 10);
+            }, maxSpeed - speed);
         });
     });
 }
 
-async function bubbleSort(bars, callback, delay = 100) {
+async function bubbleSort(bars, callback) {
     let aborted = false;
     let barsCopy = [...bars];
 
@@ -139,7 +148,7 @@ async function bubbleSort(bars, callback, delay = 100) {
             await new Promise(resolve => {
                 setTimeout(() => {
                     resolve();
-                }, 50);
+                }, 2);
             });
 
             if(barVal > nextBarVal) {
