@@ -2,7 +2,7 @@ const sortedBarColor = "#f5761a";
 const normalBarColor = "#996033";
 const wrongOrderColor = "#cc0000";
 const correctOrderColor = "#00b100";
-const maxSpeed = 600;
+const maxSpeed = 500;
 
 let sortClicked = false;
 

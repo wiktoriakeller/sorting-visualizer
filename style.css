@@ -174,12 +174,12 @@ body {
 }
 
 @media screen and (max-width: 900px) {
-    .text {
+    .navbar .icon {
         display: none;
     }
 
-    .navbar-button {
-        margin-left: 1.25%;
+    .text {
+        display: none;
     }
 
     .slider-container {
@@ -191,6 +191,7 @@ body {
     #sort-picker {
         width: 25%;
         margin-left: auto;
+        margin-right: 2%;
     }
 }
 
