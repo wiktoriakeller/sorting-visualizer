@@ -1,6 +1,7 @@
 const sortedBarColor = "#f5761a";
-const unsortedBarColor = "#ddb12c";
 const normalBarColor = "#996033";
+const wrongOrderColor = "#cc0000";
+const correctOrderColor = "#00b100";
 const maxSpeed = 500;
 
 let sortClicked = false;
@@ -39,7 +40,14 @@ function setSortSliderVal() {
         bar.className = "bar";
         bar.style.width = barWidth + "%";
         bar.style.height = randomHeight + "%";
-        $("#bars").append(bar);
+        bars.appendChild(bar);
+
+        if(sortRangeVal <= 15) {
+            let barText = document.createElement("span");
+            barText.className = "bar-text";
+            barText.textContent = bar.style.height.replace("%", "");
+            bar.appendChild(barText);
+        }
     }
 }
 
@@ -142,18 +150,40 @@ async function bubbleSort(bars, callback) {
             let barVal = bars[j].clientHeight;
             let nextBarVal = bars[j + 1].clientHeight;
 
-            bars[j].style.background = unsortedBarColor;
-            bars[j + 1].style.background = unsortedBarColor;
+            if(barVal <= nextBarVal) {
+                bars[j].style.background = correctOrderColor;
+                bars[j + 1].style.background = correctOrderColor;
+            }
+            else {
+                bars[j].style.background = wrongOrderColor;
+                bars[j + 1].style.background = wrongOrderColor;
+            }
+
+            let speed = $("#sort-speed").val();
 
             await new Promise(resolve => {
                 setTimeout(() => {
                     resolve();
-                }, 2);
+                }, (maxSpeed - speed) / 1.5);
             });
 
             if(barVal > nextBarVal) {
                 await swap(bars, j, j + 1);
             }
+
+            if(sortClicked === false) {
+                aborted = true;
+                break;
+            }
+
+            bars[j].style.background = correctOrderColor;
+            bars[j + 1].style.background = correctOrderColor;
+
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    resolve();
+                }, (maxSpeed - speed) / 1.5);
+            });
 
             bars[j].style.background = normalBarColor;
             bars[j + 1].style.background = normalBarColor;
