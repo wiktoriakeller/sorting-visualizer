@@ -3,12 +3,19 @@ const unsortedBarColor = "#ddb12c";
 const normalBarColor = "#996033";
 
 let sortClicked = false;
-let barsCopy = null;
 
 $(document).ready(function() {
+    setSpeedSliderVal();
     setSortSliderVal();
     resize();
 });
+
+$(document).on("input", "#sort-speed", setSpeedSliderVal);
+
+function setSpeedSliderVal() {
+    let sortSpeedVal = $("#sort-speed").val();
+    $("#sort-speed-value").html(sortSpeedVal);
+}
 
 $(document).on("input", "#sort-range", setSortSliderVal);
 
@@ -119,7 +126,7 @@ function swap(arr, i, j) {
     });
 }
 
-async function bubbleSort(bars, callback, delay = 100) {
+async function bubbleSort(bars, callback) {
     let aborted = false;
     let barsCopy = [...bars];
 
