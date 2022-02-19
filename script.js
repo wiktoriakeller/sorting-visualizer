@@ -1,6 +1,7 @@
 const sortedBarColor = "#f5761a";
 const unsortedBarColor = "#ddb12c";
 const normalBarColor = "#996033";
+const maxSpeed = 500;
 
 let sortClicked = false;
 
@@ -116,12 +117,13 @@ function swap(arr, i, j) {
 
         arr[i].style.transform = transform2;
         arr[j].style.transform = transform1;
+        let speed = $("#sort-speed").val();
 
         window.requestAnimationFrame(function() {
             setTimeout(() => {
                 container.insertBefore(arr[j], arr[i]);
                 resolve();
-            }, 10);
+            }, maxSpeed - speed);
         });
     });
 }
@@ -146,7 +148,7 @@ async function bubbleSort(bars, callback) {
             await new Promise(resolve => {
                 setTimeout(() => {
                     resolve();
-                }, 50);
+                }, 2);
             });
 
             if(barVal > nextBarVal) {
