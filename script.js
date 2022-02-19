@@ -40,7 +40,14 @@ function setSortSliderVal() {
         bar.className = "bar";
         bar.style.width = barWidth + "%";
         bar.style.height = randomHeight + "%";
-        $("#bars").append(bar);
+        bars.appendChild(bar);
+
+        if(sortRangeVal <= 15) {
+            let barText = document.createElement("span");
+            barText.className = "bar-text";
+            barText.textContent = bar.style.height.replace("%", "");
+            bar.appendChild(barText);
+        }
     }
 }
 

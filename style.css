@@ -107,6 +107,16 @@ body {
 
 .bar {
     background-color: var(--bar-color, aqua);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bar-text {
+    width: 0;
+    min-width: min-content;
+    font-size: smaller;
+    color: white;
 }
 
 .slider-container {
@@ -181,5 +191,17 @@ body {
     #sort-picker {
         width: 25%;
         margin-left: auto;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .bar-text {
+        display: none;
+    }
+}
+
+@media screen and (max-height: 200px) {
+    .bar-text {
+        display: none;
     }
 }
