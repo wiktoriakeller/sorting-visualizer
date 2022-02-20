@@ -2,9 +2,11 @@ const sortedBarColor = "#f5761a";
 const normalBarColor = "#996033";
 const wrongOrderColor = "#cc0000";
 const correctOrderColor = "#00b100";
-const maxSpeed = 500;
+const maxSpeedTime = 1000;
 
-let sortClicked = false;
+let controller = new AbortController();
+let sortingStarted = false;
+let barsCopy = []
 
 $(document).ready(function() {
     setSpeedSliderVal();
@@ -31,7 +33,7 @@ function setSortSliderVal() {
     const bars = document.getElementById("bars");
     bars.innerHTML = "";
 
-    let width = 100; //100%
+    let width = 100;
     let barWidth = width / sortRangeVal;
 
     for(let i = 0; i < sortRangeVal; i++) {
@@ -63,7 +65,6 @@ function resize() {
     }
     else {
         bars.style.height = (height - navbar.clientHeight) + "px";
-
         let sortRangeVal = $("#sort-range").val();
         let barWidth = 100 / sortRangeVal;
         $(".bar").width(barWidth + "%");
@@ -74,44 +75,71 @@ function getRandomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
-function resetBars(bars) {
+function resetBarsColors(bars) {
     for(let i = 0; i < bars.length; i++) {
         bars[i].style.background = normalBarColor;
     }
 }
 
-function setControls() {
-    $("#sort-range").prop("disabled", false);
+function resetSettings() {
     $("#sort-button span").text("SORT!");
-    sortClicked = false;
+    $("#sort-range").prop("disabled", false);
+    sortingStarted = false;
 }
  
 $("#sort-button").click(function() {
     let algorithm = $("#sort-picker").val();
 
-    if(sortClicked) {
-        sortClicked = false;
+    if(sortingStarted) {
+        sortingStarted = false;
+        controller.abort();
     }
     else if(algorithm != null) {
-        sortClicked = true;
+        sortingStarted = true;
         $("#sort-button span").text("STOP!");
         $("#sort-range").prop("disabled", true);
 
         const bars = document.getElementsByClassName("bar");
-        resetBars(bars);
+        barsCopy = [...bars];
 
+        resetBarsColors(bars);
+        chooseAlgorithm(algorithm, bars);
+    }
+});
+
+async function chooseAlgorithm(algorithm, bars) {
+    try {
         switch(algorithm) {
             case "Bubble sort":
-                bubbleSort(bars, setControls);
+                await bubbleSort(bars, {signal: controller.signal});
                 break;
             default:
                 break;
         }
     }
-});
+    catch(error) {
+        resetBarsColors(barsCopy);
+        $("#bars").html(barsCopy);
+        controller = new AbortController();
+    }
+    finally {
+        resetSettings();
+    }
+}
 
-function swap(arr, i, j) {
-    return new Promise(resolve => {
+function swap(arr, i, j, {signal}) {
+    if(signal?.aborted) {
+        return Promise.reject(new DOMException("Aborted", "AbortError"));
+    }
+
+    return new Promise((resolve, reject) => {
+        let timeout;
+
+        const swapAbortHandler = () => {
+            clearTimeout(timeout);
+            reject(new DOMException("Aborted", "AbortError"));
+        }
+
         let tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
@@ -128,81 +156,117 @@ function swap(arr, i, j) {
         let speed = $("#sort-speed").val();
 
         window.requestAnimationFrame(function() {
-            setTimeout(() => {
+            timeout = setTimeout(() => {
                 container.insertBefore(arr[j], arr[i]);
                 resolve();
-            }, maxSpeed - speed);
+                signal?.removeEventListener("abort", swapAbortHandler);
+            }, (maxSpeedTime - speed));
         });
+
+        signal?.addEventListener("abort", swapAbortHandler);
     });
 }
 
-async function bubbleSort(bars, callback) {
-    let aborted = false;
-    let barsCopy = [...bars];
+function bubbleSort(bars, {signal}) {
+    if(signal?.aborted) {
+        return Promise.reject(new DOMException("Aborted", "AbortError"));
+    }
+    
+    return new Promise(async (resolve, reject) => {   
+        const sortAbortHandler = () => {
+            reject(new DOMException("Aborted", "AbortError"));
+        };
+        
+        signal?.addEventListener("abort", sortAbortHandler);
 
-    for(let i = 0; i < bars.length - 1; i++) {
-        for(let j = 0; j < bars.length - i - 1; j++) {
-            if(sortClicked === false) {
-                aborted = true;
-                break;
-            }
+        for(let i = 0; i < bars.length - 1; i++) {
+            for(let j = 0; j < bars.length - i - 1; j++) {
+                let barVal = bars[j].clientHeight;
+                let nextBarVal = bars[j + 1].clientHeight;
 
-            let barVal = bars[j].clientHeight;
-            let nextBarVal = bars[j + 1].clientHeight;
+                if(barVal <= nextBarVal) {
+                    bars[j].style.background = correctOrderColor;
+                    bars[j + 1].style.background = correctOrderColor;
+                }
+                else {
+                    bars[j].style.background = wrongOrderColor;
+                    bars[j + 1].style.background = wrongOrderColor;
+                }
 
-            if(barVal <= nextBarVal) {
+                let speed = $("#sort-speed").val();
+
+                try {
+                    await new Promise((resolve, reject) => {
+                        if(signal?.aborted) {
+                            reject(new DOMException("Aborted", "AbortError"));
+                        }
+
+                        let timeout1;
+                        const timeout1AbortHandler = () => {
+                            clearTimeout(timeout1)
+                            reject(new DOMException("Aborted", "AbortError"));
+                        };
+
+                        timeout1 = setTimeout(() => {
+                            resolve();
+                            signal?.removeEventListener("abort", timeout1AbortHandler);
+                        }, (maxSpeedTime - speed) / 1.5);
+    
+                        signal?.addEventListener("abort", timeout1AbortHandler);
+                    });
+                }
+                catch(error) {
+                    reject(new DOMException("Aborted", "AbortError"));
+                    return;
+                }
+
+                try {
+                    if(barVal > nextBarVal) {
+                        await swap(bars, j, j + 1, {signal});
+                    }
+                }
+                catch(error) {
+                    reject(new DOMException("Aborted", "AbortError"));
+                    return;
+                }
+
                 bars[j].style.background = correctOrderColor;
                 bars[j + 1].style.background = correctOrderColor;
+
+                try {
+                    await new Promise((resolve, reject) => {
+                        if(signal?.aborted) {
+                            reject(new DOMException("Aborted", "AbortError"));
+                        }
+
+                        let timeout2;
+                        const timeout2AbortHandler = () => {
+                            clearTimeout(timeout2)
+                            reject(new DOMException("Aborted", "AbortError"));
+                        };
+
+                        timeout2 = setTimeout(() => {
+                            resolve();
+                            signal?.removeEventListener("abort", timeout2AbortHandler);
+                        }, (maxSpeedTime - speed) / 1.5);
+    
+                        signal?.addEventListener("abort", timeout2AbortHandler);
+                    });
+                }
+                catch(error) {
+                    reject(new DOMException("Aborted", "AbortError"));
+                    return;
+                }
+
+                bars[j].style.background = normalBarColor;
+                bars[j + 1].style.background = normalBarColor;
             }
-            else {
-                bars[j].style.background = wrongOrderColor;
-                bars[j + 1].style.background = wrongOrderColor;
-            }
 
-            let speed = $("#sort-speed").val();
-
-            await new Promise(resolve => {
-                setTimeout(() => {
-                    resolve();
-                }, (maxSpeed - speed) / 1.5);
-            });
-
-            if(barVal > nextBarVal) {
-                await swap(bars, j, j + 1);
-            }
-
-            if(sortClicked === false) {
-                aborted = true;
-                break;
-            }
-
-            bars[j].style.background = correctOrderColor;
-            bars[j + 1].style.background = correctOrderColor;
-
-            await new Promise(resolve => {
-                setTimeout(() => {
-                    resolve();
-                }, (maxSpeed - speed) / 1.5);
-            });
-
-            bars[j].style.background = normalBarColor;
-            bars[j + 1].style.background = normalBarColor;
+            bars[bars.length - i - 1].style.background = sortedBarColor;
         }
 
-        if(aborted) {
-            break;
-        }
-
-        bars[bars.length - i - 1].style.background = sortedBarColor;
-    }
-
-    if(aborted) {
-        resetBars(barsCopy);
-        $("#bars").html(barsCopy);
-    }
-    else {
         bars[0].style.background = sortedBarColor;
-    }
-
-    callback();
-};
+        resolve();
+        signal?.removeEventListener("abort", sortAbortHandler);
+    });
+}
