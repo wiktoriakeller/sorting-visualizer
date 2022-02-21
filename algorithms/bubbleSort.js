@@ -11,6 +11,7 @@ export function bubbleSort(bars, {signal}) {
         };
         
         signal?.addEventListener("abort", sortAbortHandler);
+        let speed = 0;
 
         for(let i = 0; i < bars.length - 1; i++) {
             for(let j = 0; j < bars.length - i - 1; j++) {
@@ -26,9 +27,8 @@ export function bubbleSort(bars, {signal}) {
                     bars[j + 1].style.background = wrongOrderColor;
                 }
 
-                let speed = $("#sort-speed").val();
-
                 try {
+                    speed = $("#sort-speed").val();
                     await wait({signal}, (maxSpeedTime - speed) / 1.5);
                 }
                 catch(error) {
@@ -51,6 +51,7 @@ export function bubbleSort(bars, {signal}) {
                 bars[j + 1].style.background = correctOrderColor;
 
                 try {
+                    speed = $("#sort-speed").val();
                     await wait({signal}, (maxSpeedTime - speed) / 1.5);
                 }
                 catch(error) {
