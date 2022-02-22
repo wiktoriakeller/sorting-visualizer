@@ -85,11 +85,10 @@ $("#sort-button").click(function() {
         $("#sort-button span").text("STOP!");
         $("#sort-range").prop("disabled", true);
 
-        const bars = document.getElementsByClassName("bar");
-        barsCopy = [...bars];
+        barsCopy = [...document.getElementsByClassName("bar")];
 
         resetBarsColors(bars);
-        chooseAlgorithm(algorithm, bars);
+        chooseAlgorithm(algorithm);
     }
 });
 
@@ -99,14 +98,14 @@ function resetSettings() {
     sortingStarted = false;
 }
 
-async function chooseAlgorithm(algorithm, bars) {
+async function chooseAlgorithm(algorithm) {
     try {
         switch(algorithm) {
             case "Bubble sort":
-                await bubbleSort(bars, {signal: controller.signal});
+                await bubbleSort({signal: controller.signal});
                 break;
             case "Merge sort":
-                await mergeSort(bars, {signal: controller.signal});
+                await mergeSort({signal: controller.signal});
                 break;
             default:
                 break;

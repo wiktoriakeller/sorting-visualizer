@@ -26,14 +26,14 @@ function swap(arr, i, j, {signal}) {
 
         arr[i].style.transform = transform2;
         arr[j].style.transform = transform1;
-        let speed = $("#sort-speed").val();
+        let time = maxSpeedTime - $("#sort-speed").val();
 
         window.requestAnimationFrame(function() {
             timeout = setTimeout(() => {
                 container.insertBefore(arr[j], arr[i]);
                 resolve();
                 signal?.removeEventListener("abort", swapAbortHandler);
-            }, (maxSpeedTime - speed));
+            }, time);
         });
 
         signal?.addEventListener("abort", swapAbortHandler);
@@ -46,7 +46,7 @@ function resetBarsColors(bars) {
     }
 }
 
-function wait({signal}, time) {
+function wait(arr, i, j, color, {signal}, time = null) {
     if(signal?.aborted) {
         return Promise.reject(new DOMException("Aborted", "AbortError"));
     }
@@ -57,6 +57,13 @@ function wait({signal}, time) {
             clearTimeout(timeout)
             reject(new DOMException("Aborted", "AbortError"));
         };
+
+        if(time === null) {
+            time = (maxSpeedTime - $("#sort-speed").val()) / 1.5;
+        }
+
+        arr[i].style.background = color;
+        arr[j].style.background = color;
 
         timeout = setTimeout(() => {
             resolve();

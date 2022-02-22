@@ -1,48 +1,91 @@
-import { swap, wait, correctOrderColor, wrongOrderColor, normalBarColor, maxSpeedTime } from "./base.js";
+import { swap, wait, correctOrderColor, wrongOrderColor, normalBarColor } from "./base.js";
 
-function merge(arr, leftStart, mid, rightEnd, {signal}) {
+function merge(leftStart, mid, rightEnd, {signal}) {
     if(signal?.aborted) {
         return Promise.reject(new DOMException("Aborted", "AbortError"));
     }
 
     return new Promise(async (resolve, reject) => {
-        if(arr.length == 1) {
-            resolve();
-            return;
-        }
+        const mergeAbortHandler = () => {
+            reject(new DOMException("Aborted", "AbortError"));
+        };
 
+        signal?.addEventListener("abort", mergeAbortHandler);
+
+        let arr = document.getElementsByClassName("bar");
         let i = leftStart;
         let j = mid + 1;
+        let previousI = 0;
+        let previousJ = 0;
 
         while(i <= rightEnd && j <= rightEnd && i < j) {
             let bar1Val = arr[i].clientHeight;
             let bar2Val = arr[j].clientHeight;
+            let colorToAssign = wrongOrderColor;
+            previousI = i;
+            previousJ = j;
 
-            if(bar1Val > bar2Val) {
-                await swap(arr, i, j, {signal});
-                i++;
-                j++;
+            if(bar1Val <= bar2Val) {
+                colorToAssign = correctOrderColor;
+                colorToAssign = correctOrderColor;
             }
-            else {
-                i++;
+
+            try {
+                await wait(arr, i, j, colorToAssign, {signal});
+
+                if(bar1Val > bar2Val) {
+                    await swap(arr, i, j, {signal});
+                    arr = document.getElementsByClassName("bar");
+
+                    previousI = -1;
+                    previousJ = -1;
+                    for(let g = 0; g < arr.length; g++) {
+                        if(previousI === -1 && arr[g].style.background.includes("rgb(204, 0, 0)")) {
+                            previousI = g;
+                        }
+                        else if(previousJ === -1 && arr[g].style.background.includes("rgb(204, 0, 0)")) {
+                            previousJ = g;
+                        }
+
+                        if(previousI !== -1 && previousJ !== -1) {
+                            break;
+                        }
+                    }
+
+                    await wait(arr, previousI, previousJ, correctOrderColor, {signal});
+                    i++;
+                    j++;
+                }
+                else {
+                    i++;
+                }
+
+                arr[previousI].style.background = normalBarColor;
+                arr[previousJ].style.background = normalBarColor;
+            }
+            catch(error) {
+                reject(new DOMException("Aborted", "AbortError"));
+                return;
             }
         }
 
         resolve();
+        signal?.removeEventListener("abort", mergeAbortHandler);
     });
 }
 
-export function mergeSort(bars, {signal}) {
+export function mergeSort({signal}) {
     if(signal?.aborted) {
         return Prosmise.reject(new DOMException("Aborted", "Abort"));
     }
     
     return new Promise(async (resolve, reject) => {
-        const sortAbortHandler = () => {
+        const mergeSortAbortHandler = () => {
             reject(new DOMException("Aborted", "AbortError"));    
         }
         
-        signal?.addEventListener("abort", sortAbortHandler);
+        signal?.addEventListener("abort", mergeSortAbortHandler);
+        let bars = document.getElementsByClassName("bar");
 
         let n = bars.length;
         for(let currentSize = 1; currentSize < n; currentSize *= 2) {
@@ -55,7 +98,7 @@ export function mergeSort(bars, {signal}) {
                 
                 //merge subarrays bars[leftStart...mid] and bars[mid+1...rightEnd]
                 try {
-                    await merge(bars, leftStart, mid, rightEnd, {signal});
+                    await merge(leftStart, mid, rightEnd, {signal});
                     bars = document.getElementsByClassName("bar");
                 }
                 catch(error) {
@@ -66,6 +109,6 @@ export function mergeSort(bars, {signal}) {
         }
 
         resolve();
-        signal?.removeEventListener("abort", sortAbortHandler);
+        signal?.removeEventListener("abort", mergeSortAbortHandler);
     });
 }
