@@ -120,11 +120,12 @@ body {
 }
 
 .slider-container {
+    margin-bottom: auto;
     width: 10%;
     display: flex;
-    align-items: center;
-    flex-direction: row;
-    gap: 5%;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .slider {
@@ -138,6 +139,8 @@ body {
     opacity: 0.7;
     transition: opacity 0.2s;
     border-radius: 5px;
+    align-self: center;
+    flex-grow: 2;
 }
 
 .slider:hover {
@@ -166,7 +169,8 @@ body {
 }
 
 .slider-value {
-    margin-bottom: 3px;
+    font-size: 0.8em;
+    margin: 0;
 }
 
 .slider-value:hover {
@@ -184,7 +188,6 @@ body {
 
     .slider-container {
         width: 25%;
-        gap: 5%;
         margin-left: auto;
     }
 

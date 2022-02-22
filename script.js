@@ -16,14 +16,14 @@ $(document).on("input", "#sort-speed", setSpeedSliderVal);
 
 function setSpeedSliderVal() {
     let sortSpeedVal = $("#sort-speed").val();
-    $("#sort-speed-value").html(sortSpeedVal);
+    $("#sort-speed-value").html("Speed: " + sortSpeedVal);
 }
 
 $(document).on("input", "#sort-range", setSortSliderVal);
 
 function setSortSliderVal() {
     let sortRangeVal = $("#sort-range").val();
-    $("#sort-slider-value").html(sortRangeVal);
+    $("#sort-slider-value").html("Bars: " + sortRangeVal);
     
     let minHeight = 5;
     let maxHeight = 99;
