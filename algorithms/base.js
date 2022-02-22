@@ -2,6 +2,8 @@ const sortedBarColor = "#f5761a";
 const normalBarColor = "#996033";
 const wrongOrderColor = "#cc0000";
 const correctOrderColor = "#00b100";
+const sortedBarColorRGB = "rb(245, 118, 26)";
+const wrongBarColorRGB = "rgb(204, 0, 0)";
 const maxSpeedTime = document.getElementById("sort-speed").max;
 
 function swap(arr, i, j, {signal}) {
@@ -74,4 +76,4 @@ function wait(arr, i, j, color, {signal}, time = null) {
     });
 }
 
-export { swap, resetBarsColors, wait, sortedBarColor, normalBarColor, wrongOrderColor, correctOrderColor, maxSpeedTime };
+export { swap, resetBarsColors, wait, sortedBarColor, normalBarColor, wrongOrderColor, correctOrderColor, maxSpeedTime, sortedBarColorRGB, wrongBarColorRGB };

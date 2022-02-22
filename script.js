@@ -85,7 +85,8 @@ $("#sort-button").click(function() {
         $("#sort-button span").text("STOP!");
         $("#sort-range").prop("disabled", true);
 
-        barsCopy = [...document.getElementsByClassName("bar")];
+        const bars = document.getElementsByClassName("bar");
+        barsCopy = [...bars];
 
         resetBarsColors(bars);
         chooseAlgorithm(algorithm);

@@ -1,6 +1,6 @@
-import { swap, wait, correctOrderColor, wrongOrderColor, normalBarColor } from "./base.js";
+import { swap, wait, correctOrderColor, wrongOrderColor, normalBarColor, sortedBarColor, sortedBarColorRGB, wrongBarColorRGB } from "./base.js";
 
-function merge(leftStart, mid, rightEnd, {signal}) {
+function merge(leftStart, mid, rightEnd, lastIteration, {signal}) {
     if(signal?.aborted) {
         return Promise.reject(new DOMException("Aborted", "AbortError"));
     }
@@ -40,10 +40,10 @@ function merge(leftStart, mid, rightEnd, {signal}) {
                     previousI = -1;
                     previousJ = -1;
                     for(let g = 0; g < arr.length; g++) {
-                        if(previousI === -1 && arr[g].style.background.includes("rgb(204, 0, 0)")) {
+                        if(previousI === -1 && arr[g].style.background.includes(wrongBarColorRGB)) {
                             previousI = g;
                         }
-                        else if(previousJ === -1 && arr[g].style.background.includes("rgb(204, 0, 0)")) {
+                        else if(previousJ === -1 && arr[g].style.background.includes(wrongBarColorRGB)) {
                             previousJ = g;
                         }
 
@@ -55,17 +55,40 @@ function merge(leftStart, mid, rightEnd, {signal}) {
                     await wait(arr, previousI, previousJ, correctOrderColor, {signal});
                     i++;
                     j++;
+
+                    if(!lastIteration) {
+                        arr[previousI].style.background = normalBarColor;
+                        arr[previousJ].style.background = normalBarColor;
+                    }
+                    else {
+                        arr[previousI].style.background = sortedBarColor;
+                        arr[previousJ].style.background = sortedBarColor;
+                    }
                 }
                 else {
                     i++;
-                }
 
-                arr[previousI].style.background = normalBarColor;
-                arr[previousJ].style.background = normalBarColor;
+                    if(!lastIteration) {
+                        arr[previousI].style.background = normalBarColor;
+                    }
+                    else {
+                        arr[previousI].style.background = sortedBarColor;
+                    }
+
+                    arr[previousJ].style.background = normalBarColor;
+                }                
             }
             catch(error) {
                 reject(new DOMException("Aborted", "AbortError"));
                 return;
+            }
+        }
+
+        if(lastIteration) {
+            for(let g = i; g < arr.length; g++) {
+                if(!arr[g].style.background.includes(sortedBarColorRGB)) {
+                    arr[g].style.background = sortedBarColor;
+                }
             }
         }
 
@@ -88,6 +111,8 @@ export function mergeSort({signal}) {
         let bars = document.getElementsByClassName("bar");
 
         let n = bars.length;
+        let lastIteration = false;
+
         for(let currentSize = 1; currentSize < n; currentSize *= 2) {
             for(let leftStart = 0; leftStart < n - 1; leftStart += 2 * currentSize) {
                 //end of left subarray
@@ -96,9 +121,13 @@ export function mergeSort({signal}) {
                 //end of right subarray
                 let rightEnd = Math.min(leftStart + (2 * currentSize) - 1, n - 1);
                 
+                if(currentSize * 2 >= n) {
+                    lastIteration = true;
+                }
+
                 //merge subarrays bars[leftStart...mid] and bars[mid+1...rightEnd]
                 try {
-                    await merge(leftStart, mid, rightEnd, {signal});
+                    await merge(leftStart, mid, rightEnd, lastIteration, {signal});
                     bars = document.getElementsByClassName("bar");
                 }
                 catch(error) {
