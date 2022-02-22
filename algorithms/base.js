@@ -2,6 +2,8 @@ const sortedBarColor = "#f5761a";
 const normalBarColor = "#996033";
 const wrongOrderColor = "#cc0000";
 const correctOrderColor = "#00b100";
+const sortedBarColorRGB = "rb(245, 118, 26)";
+const wrongBarColorRGB = "rgb(204, 0, 0)";
 const maxSpeedTime = document.getElementById("sort-speed").max;
 
 function swap(arr, i, j, {signal}) {
@@ -26,14 +28,14 @@ function swap(arr, i, j, {signal}) {
 
         arr[i].style.transform = transform2;
         arr[j].style.transform = transform1;
-        let speed = $("#sort-speed").val();
+        let time = maxSpeedTime - $("#sort-speed").val();
 
         window.requestAnimationFrame(function() {
             timeout = setTimeout(() => {
                 container.insertBefore(arr[j], arr[i]);
                 resolve();
                 signal?.removeEventListener("abort", swapAbortHandler);
-            }, (maxSpeedTime - speed));
+            }, time);
         });
 
         signal?.addEventListener("abort", swapAbortHandler);
@@ -46,7 +48,7 @@ function resetBarsColors(bars) {
     }
 }
 
-function wait({signal}, time) {
+function wait(arr, i, j, color, {signal}, time = null) {
     if(signal?.aborted) {
         return Promise.reject(new DOMException("Aborted", "AbortError"));
     }
@@ -58,6 +60,13 @@ function wait({signal}, time) {
             reject(new DOMException("Aborted", "AbortError"));
         };
 
+        if(time === null) {
+            time = (maxSpeedTime - $("#sort-speed").val()) / 1.5;
+        }
+
+        arr[i].style.background = color;
+        arr[j].style.background = color;
+
         timeout = setTimeout(() => {
             resolve();
             signal?.removeEventListener("abort", timeoutAbortHandler);
@@ -67,4 +76,4 @@ function wait({signal}, time) {
     });
 }
 
-export { swap, resetBarsColors, wait, sortedBarColor, normalBarColor, wrongOrderColor, correctOrderColor, maxSpeedTime };
+export { swap, resetBarsColors, wait, sortedBarColor, normalBarColor, wrongOrderColor, correctOrderColor, maxSpeedTime, sortedBarColorRGB, wrongBarColorRGB };

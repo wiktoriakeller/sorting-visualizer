@@ -1,5 +1,6 @@
 import { bubbleSort } from "./algorithms/bubbleSort.js";
 import { resetBarsColors } from "./algorithms/base.js";
+import { mergeSort } from "./algorithms/mergeSort.js";
 
 let controller = new AbortController();
 let sortingStarted = false;
@@ -88,7 +89,7 @@ $("#sort-button").click(function() {
         barsCopy = [...bars];
 
         resetBarsColors(bars);
-        chooseAlgorithm(algorithm, bars);
+        chooseAlgorithm(algorithm);
     }
 });
 
@@ -98,11 +99,14 @@ function resetSettings() {
     sortingStarted = false;
 }
 
-async function chooseAlgorithm(algorithm, bars) {
+async function chooseAlgorithm(algorithm) {
     try {
         switch(algorithm) {
             case "Bubble sort":
-                await bubbleSort(bars, {signal: controller.signal});
+                await bubbleSort({signal: controller.signal});
+                break;
+            case "Merge sort":
+                await mergeSort({signal: controller.signal});
                 break;
             default:
                 break;
