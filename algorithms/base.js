@@ -76,4 +76,4 @@ function wait(arr, i, j, color, {signal}, time = null) {
     });
 }
 
-export { swap, resetBarsColors, wait, sortedBarColor, normalBarColor, wrongOrderColor, correctOrderColor, maxSpeedTime, sortedBarColorRGB, wrongBarColorRGB };
+export {swap, resetBarsColors, wait, sortedBarColor, normalBarColor, wrongOrderColor, correctOrderColor, maxSpeedTime, sortedBarColorRGB, wrongBarColorRGB};
