@@ -1,4 +1,4 @@
-import { swap, wait, sortedBarColor, normalBarColor, correctOrderColor, wrongOrderColor, maxSpeedTime } from "./base.js";
+import {swap, wait, sortedBarColor, normalBarColor, correctOrderColor, wrongOrderColor} from "./base.js";
 
 export function bubbleSort({signal}) {
     if(signal?.aborted) {
@@ -6,11 +6,11 @@ export function bubbleSort({signal}) {
     }
     
     return new Promise(async (resolve, reject) => {   
-        const sortAbortHandler = () => {
+        const bubbleAbortHandler = () => {
             reject(new DOMException("Aborted", "AbortError"));
         };
         
-        signal?.addEventListener("abort", sortAbortHandler);
+        signal?.addEventListener("abort", bubbleAbortHandler);
         let bars = document.getElementsByClassName("bar");
 
         for(let i = 0; i < bars.length - 1; i++) {
@@ -47,6 +47,6 @@ export function bubbleSort({signal}) {
 
         bars[0].style.background = sortedBarColor;
         resolve();
-        signal?.removeEventListener("abort", sortAbortHandler);
+        signal?.removeEventListener("abort", bubbleAbortHandler);
     });
 }

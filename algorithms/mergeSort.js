@@ -1,4 +1,4 @@
-import { swap, wait, correctOrderColor, wrongOrderColor, normalBarColor, sortedBarColor, sortedBarColorRGB, wrongBarColorRGB } from "./base.js";
+import {swap, wait, correctOrderColor, wrongOrderColor, normalBarColor, sortedBarColor, sortedBarColorRGB, wrongBarColorRGB} from "./base.js";
 
 function merge(leftStart, mid, rightEnd, lastIteration, {signal}) {
     if(signal?.aborted) {
@@ -99,7 +99,7 @@ function merge(leftStart, mid, rightEnd, lastIteration, {signal}) {
 
 export function mergeSort({signal}) {
     if(signal?.aborted) {
-        return Prosmise.reject(new DOMException("Aborted", "Abort"));
+        return Promise.reject(new DOMException("Aborted", "AbortError"));
     }
     
     return new Promise(async (resolve, reject) => {

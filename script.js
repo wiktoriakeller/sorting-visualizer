@@ -1,6 +1,7 @@
-import { bubbleSort } from "./algorithms/bubbleSort.js";
-import { resetBarsColors } from "./algorithms/base.js";
-import { mergeSort } from "./algorithms/mergeSort.js";
+import {bubbleSort} from "./algorithms/bubbleSort.js";
+import {resetBarsColors} from "./algorithms/base.js";
+import {mergeSort} from "./algorithms/mergeSort.js";
+import {insertionSort} from "./algorithms/insertionSort.js";
 
 let controller = new AbortController();
 let sortingStarted = false;
@@ -107,6 +108,9 @@ async function chooseAlgorithm(algorithm) {
                 break;
             case "Merge sort":
                 await mergeSort({signal: controller.signal});
+                break;
+            case "Insertion sort":
+                await insertionSort({signal: controller.signal});
                 break;
             default:
                 break;
