@@ -65,7 +65,10 @@ function wait(arr, i, j, color, {signal}, time = null) {
         }
 
         arr[i].style.background = color;
-        arr[j].style.background = color;
+        
+        if(j !== null) {
+            arr[j].style.background = color;
+        }
 
         timeout = setTimeout(() => {
             resolve();

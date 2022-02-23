@@ -1,4 +1,4 @@
-import {swap, wait, wrongOrderColor, correctOrderColor, normalBarColor, sortedBarColor } from "./base.js";
+import {swap, wait, wrongOrderColor, correctOrderColor, normalBarColor, sortedBarColor, maxSpeedTime } from "./base.js";
 
 export function insertionSort({signal}) {
     if(signal?.aborted) {
@@ -12,21 +12,48 @@ export function insertionSort({signal}) {
         signal?.addEventListener("abort", insertionAbortHandler);
 
         let bars = document.getElementsByClassName("bar");  
-
+        
         for(let i = 1; i < bars.length; i++) {
             let k = i - 1;
             let elem = i;
+            try {
+                if(bars[elem].clientHeight >= bars[k].clientHeight) {
+                    await wait(bars, k, elem, correctOrderColor, {signal});
+                }
+                else {
+                    while(k >= 0 && bars[elem].clientHeight < bars[k].clientHeight) {
+                        await wait(bars, k, elem, wrongOrderColor, {signal});
+                        await swap(bars, k, elem, {signal});
+                        bars = document.getElementsByClassName("bar");
+                        await wait(bars, k, elem, correctOrderColor, {signal});
 
-            while(k >= 0 && bars[elem].clientHeight < bars[k].clientHeight) {
-                try {
-                    await swap(bars, k, elem, {signal});
-                    elem = k;
-                    k--;
+                        bars[k].style.background = normalBarColor;
+                        bars[elem].style.background = normalBarColor;
+
+                        elem = k;
+                        k--;
+                    }
                 }
-                catch(error) {
-                    reject(new DOMException("Aborted", "AbortError"));
-                    return;
-                }
+
+               if(k >= 0 && elem >= 0) {
+                    bars[k].style.background = normalBarColor;
+                    bars[elem].style.background = normalBarColor;
+               }
+            }
+            catch(error) {
+                reject(new DOMException("Aborted", "AbortError"));
+                return;
+            }
+        }
+
+        for(let i = 0; i < bars.length; i++) {
+            try {
+                let time = (maxSpeedTime - $("#sort-speed").val()) / 3;
+                await wait(bars, i, null, sortedBarColor, {signal}, time);
+            }
+            catch(error) {
+                reject(new DOMException("Aborted", "AbortError"));
+                return;
             }
         }
 
