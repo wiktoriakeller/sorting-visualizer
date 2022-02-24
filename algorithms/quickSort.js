@@ -1,6 +1,9 @@
-import {swap} from "./base.js";
+import {swap, wait, correctOrderColor, normalBarColor, wrongOrderColor, sortedBarColor, maxSpeedTime} from "./base.js";
 
-function partition(start, end, {signal}) {
+const pivotColor = "#0066b2";
+const selectedBarColor = "#c98e61";
+
+function partition(bars, start, end, {signal}) {
     if(signal?.aborted) {
         Promise.reject(new DOMException("Abort", "AbortError"));
     }
@@ -11,26 +14,44 @@ function partition(start, end, {signal}) {
         };
         signal?.addEventListener("abort", partitionAbortHandler);
         
-        let bars = document.getElementsByClassName("bar");
         let current = start;
-
         let candidates = [start, Math.round((start + end) / 2), end];
         candidates.sort((a, b) => bars[a].clientHeight - bars[b].clientHeight);
         let pivotIndex = candidates[1];
         let pivot = bars[pivotIndex].clientHeight;
 
         try {
+            bars[end].style.background = selectedBarColor;
+            await wait(bars, pivotIndex, null, pivotColor, {signal});
             await swap(bars, end, pivotIndex, {signal}, false);
+            
+            if(pivotIndex !== end) {
+                bars[pivotIndex].style.background = normalBarColor;
+            }
 
             for(let i = start; i < end; i++) {
+                let currentCopy = current;
+                let colorToAssign = correctOrderColor;
+
+                if(bars[i].clientHeight <= pivot) {
+                    colorToAssign = wrongOrderColor;
+                }
+
+                await wait(bars, i, current, colorToAssign, {signal});
+
                 if(bars[i].clientHeight <= pivot) {
                     await swap(bars, i, current, {signal}, false);
-                    bars = document.getElementsByClassName("bar");
+                    await wait(bars, i, current, correctOrderColor, {signal});
+                    currentCopy = current;
                     current++;
                 }
+                
+                bars[i].style.background = normalBarColor;
+                bars[currentCopy].style.background = normalBarColor;
             }
 
             await swap(bars, end, current, {signal}, false);
+            bars[current].style.background = sortedBarColor;
         }
         catch(error) {
             reject(new DOMException("Aborted", "AbortError"));
@@ -42,7 +63,7 @@ function partition(start, end, {signal}) {
     });
 }
 
-export function quickSort(start, end, {signal}) {
+export function quickSort(bars, start, end, {signal}) {
     if(signal?.aborted) {
         Promise.reject(new DOMException("Abort", "AbortError"));
     }
@@ -60,15 +81,24 @@ export function quickSort(start, end, {signal}) {
                 return;
             }
     
-            let pivot = await partition(start, end, {signal});
+            let pivot = await partition(bars, start, end, {signal});
     
             if(pivot === undefined) {
                 reject(new DOMException("Abort", "AbortError"));
                 return;
             }
     
-            await quickSort(start, pivot - 1, {signal});
-            await quickSort(pivot + 1, end, {signal});
+            await quickSort(bars, start, pivot - 1, {signal});
+
+            for(let i = start; i <= pivot - 1; i++) {
+                bars[i].style.background = sortedBarColor;
+            }
+
+            await quickSort(bars, pivot + 1, end, {signal});
+
+            for(let i = pivot + 1; i <= end; i++) {
+                bars[i].style.background = sortedBarColor;
+            }
         }
         catch(error) {
             reject(new DOMException("Aborted", "AbortError"));

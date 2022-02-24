@@ -118,7 +118,7 @@ async function chooseAlgorithm(bars, algorithm) {
                 await selectionSort({signal: controller.signal});
                 break;
             case "Quick sort":
-                await quickSort(0, bars.length - 1, {signal: controller.signal});
+                await quickSort(bars, 0, bars.length - 1, {signal: controller.signal});
                 break;
             default:
                 break;
