@@ -87,7 +87,7 @@ body {
     background-color: var(--navbar-icon-hover, orange);
 }
 
-.container {
+#container {
     display: grid;
     grid-template-rows: 2.5em min-content;
     grid-template-areas: 
