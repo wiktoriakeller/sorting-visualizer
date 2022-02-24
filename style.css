@@ -87,7 +87,7 @@ body {
     background-color: var(--navbar-icon-hover, orange);
 }
 
-.container {
+#container {
     display: grid;
     grid-template-rows: 2.5em min-content;
     grid-template-areas: 
@@ -121,7 +121,7 @@ body {
 
 .slider-container {
     margin-bottom: auto;
-    width: 10%;
+    width: 12%;
     display: flex;
     align-items: flex-start;
     justify-content: center;
