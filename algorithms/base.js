@@ -6,19 +6,24 @@ const sortedBarColorRGB = "rb(245, 118, 26)";
 const wrongBarColorRGB = "rgb(204, 0, 0)";
 const maxSpeedTime = document.getElementById("sort-speed").max;
 
-function swap(arr, i, j, {signal}) {
+function swap(arr, i, j, {signal}, insertBefore = true) {
     if(signal?.aborted) {
         return Promise.reject(new DOMException("Aborted", "AbortError"));
     }
 
     return new Promise((resolve, reject) => {
-        let timeout;
-
         const swapAbortHandler = () => {
-            clearTimeout(timeout);
             reject(new DOMException("Aborted", "AbortError"));
         }
+        signal?.addEventListener("abort", swapAbortHandler);
 
+        if(i === j) {
+            resolve();
+            signal?.removeEventListener("abort", swapAbortHandler);
+            return;
+        }
+
+        let timeout;
         const container = document.getElementById("bars");
         const style1 = window.getComputedStyle(arr[i]);
         const style2 = window.getComputedStyle(arr[j]);
@@ -32,13 +37,30 @@ function swap(arr, i, j, {signal}) {
 
         window.requestAnimationFrame(function() {
             timeout = setTimeout(() => {
-                container.insertBefore(arr[j], arr[i]);
+                try {
+                    if(insertBefore) {
+                        container.insertBefore(arr[j], arr[i]);
+                    }
+                    else {
+                        let elem1 = arr[i];
+                        let elem2 = arr[j];
+                        
+                        let tmp = document.createElement("div");
+                        container.insertBefore(tmp, elem1);
+                        container.insertBefore(elem1, elem2);
+                        container.insertBefore(elem2, tmp);
+                        container.removeChild(tmp);
+                    }
+                }
+                catch(error) {
+                    reject(new DOMException("Aborted", "AbortError"));
+                    return;
+                }
+
                 resolve();
                 signal?.removeEventListener("abort", swapAbortHandler);
             }, time);
         });
-
-        signal?.addEventListener("abort", swapAbortHandler);
     });
 }
 
@@ -65,7 +87,10 @@ function wait(arr, i, j, color, {signal}, time = null) {
         }
 
         arr[i].style.background = color;
-        arr[j].style.background = color;
+        
+        if(j !== null) {
+            arr[j].style.background = color;
+        }
 
         timeout = setTimeout(() => {
             resolve();
@@ -76,4 +101,4 @@ function wait(arr, i, j, color, {signal}, time = null) {
     });
 }
 
-export { swap, resetBarsColors, wait, sortedBarColor, normalBarColor, wrongOrderColor, correctOrderColor, maxSpeedTime, sortedBarColorRGB, wrongBarColorRGB };
+export {swap, resetBarsColors, wait, sortedBarColor, normalBarColor, wrongOrderColor, correctOrderColor, maxSpeedTime, sortedBarColorRGB, wrongBarColorRGB};

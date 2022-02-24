@@ -1,6 +1,9 @@
-import { bubbleSort } from "./algorithms/bubbleSort.js";
-import { resetBarsColors } from "./algorithms/base.js";
-import { mergeSort } from "./algorithms/mergeSort.js";
+import {bubbleSort} from "./algorithms/bubbleSort.js";
+import {resetBarsColors} from "./algorithms/base.js";
+import {mergeSort} from "./algorithms/mergeSort.js";
+import {insertionSort} from "./algorithms/insertionSort.js";
+import {selectionSort} from "./algorithms/selectionSort.js";
+import {quickSort} from "./algorithms/quickSort.js";
 
 let controller = new AbortController();
 let sortingStarted = false;
@@ -86,10 +89,10 @@ $("#sort-button").click(function() {
         $("#sort-range").prop("disabled", true);
 
         const bars = document.getElementsByClassName("bar");
-        barsCopy = [...bars];
+        barsCopy = document.getElementById("bars").cloneNode(true);
 
         resetBarsColors(bars);
-        chooseAlgorithm(algorithm);
+        chooseAlgorithm(bars, algorithm);
     }
 });
 
@@ -99,7 +102,7 @@ function resetSettings() {
     sortingStarted = false;
 }
 
-async function chooseAlgorithm(algorithm) {
+async function chooseAlgorithm(bars, algorithm) {
     try {
         switch(algorithm) {
             case "Bubble sort":
@@ -108,13 +111,25 @@ async function chooseAlgorithm(algorithm) {
             case "Merge sort":
                 await mergeSort({signal: controller.signal});
                 break;
+            case "Insertion sort":
+                await insertionSort({signal: controller.signal});
+                break;
+            case "Selection sort":
+                await selectionSort({signal: controller.signal});
+                break;
+            case "Quick sort":
+                await quickSort(bars, 0, bars.length - 1, {signal: controller.signal});
+                break;
             default:
                 break;
         }
     }
     catch(error) {
-        resetBarsColors(barsCopy);
-        $("#bars").html(barsCopy);
+        const barsDiv = document.getElementById("bars");
+        const container = document.getElementById("container");
+        container.removeChild(barsDiv);
+        container.appendChild(barsCopy);
+        resetBarsColors(document.getElementsByClassName("bar"));
         controller = new AbortController();
     }
     finally {
