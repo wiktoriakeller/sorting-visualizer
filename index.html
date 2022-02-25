@@ -15,14 +15,15 @@
             <nav class="navbar" id="main-navbar">
                 <div class="icon"><i class="fa-solid fa-signal"></i></div>
                 <span class="text">SORT VISUALIZER</span>
-                <button class="navbar-button" id="sort-button"><span>SORT!</span></button>
+                <button class="navbar-button" id="sort-button"><i class="fa-solid fa-play"></i></button>
+                <button class="navbar-button" id="shuffle-button"><i class="fa-solid fa-shuffle"></i></button>
                 <div class="slider-container">
                     <span class="slider-value" id="sort-speed-value"></span>
-                    <input type="range" min="0" max="1000" value="250" class="slider" id="sort-speed">
+                    <input type="range" min="0" max="1000" value="250" class="slider" id="sort-speed" alt="sort speed">
                 </div>
                 <div class="slider-container">
                     <span class="slider-value" id="sort-slider-value"></span>
-                    <input type="range" min="5" max="500" value="100" class="slider" id="sort-range">
+                    <input type="range" min="5" max="500" value="100" class="slider" id="sort-range" alt="bars range">
                 </div>
                 <select name="sort-picker" id="sort-picker">
                     <option value="Pick algorithm" selected disabled>Pick algorithm</option>

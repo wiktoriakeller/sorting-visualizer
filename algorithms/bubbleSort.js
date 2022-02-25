@@ -1,4 +1,4 @@
-import {swap, wait, sortedBarColor, normalBarColor, correctOrderColor, wrongOrderColor} from "./base.js";
+import { swap, wait, sortedBarColor, normalBarColor, correctOrderColor, wrongOrderColor } from "./base.js";
 
 export function bubbleSort({signal}) {
     if(signal?.aborted) {

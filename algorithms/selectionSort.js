@@ -1,4 +1,4 @@
-import {swap, wait, correctOrderColor, normalBarColor, sortedBarColor, maxSpeedTime } from "./base.js";
+import { swap, wait, correctOrderColor, normalBarColor, sortedBarColor } from "./base.js";
 
 const minBarColor = "#0066b2";
 const selectedBarColor = "#c98e61";

@@ -1,4 +1,4 @@
-import {swap, wait, correctOrderColor, wrongOrderColor, normalBarColor, sortedBarColor, sortedBarColorRGB, wrongBarColorRGB} from "./base.js";
+import { swap, wait, correctOrderColor, wrongOrderColor, normalBarColor, sortedBarColor, sortedBarColorRGB, wrongBarColorRGB } from "./base.js";
 
 function merge(leftStart, mid, rightEnd, lastIteration, {signal}) {
     if(signal?.aborted) {
