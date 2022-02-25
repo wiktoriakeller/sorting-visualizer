@@ -1,4 +1,4 @@
-import {swap, wait, wrongOrderColor, correctOrderColor, normalBarColor, sortedBarColor, maxSpeedTime } from "./base.js";
+import { swap, wait, wrongOrderColor, correctOrderColor, normalBarColor, sortedBarColor, maxSpeedTime } from "./base.js";
 
 export function insertionSort({signal}) {
     if(signal?.aborted) {

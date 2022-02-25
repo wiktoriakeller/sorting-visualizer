@@ -1,4 +1,4 @@
-import {swap, wait, correctOrderColor, normalBarColor, wrongOrderColor, sortedBarColor, maxSpeedTime} from "./base.js";
+import { swap, wait, correctOrderColor, normalBarColor, wrongOrderColor, sortedBarColor } from "./base.js";
 
 const pivotColor = "#0066b2";
 const selectedBarColor = "#c98e61";

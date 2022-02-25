@@ -1,9 +1,9 @@
-import {bubbleSort} from "./algorithms/bubbleSort.js";
-import {resetBarsColors} from "./algorithms/base.js";
-import {mergeSort} from "./algorithms/mergeSort.js";
-import {insertionSort} from "./algorithms/insertionSort.js";
-import {selectionSort} from "./algorithms/selectionSort.js";
-import {quickSort} from "./algorithms/quickSort.js";
+import { bubbleSort } from "./algorithms/bubbleSort.js";
+import { resetBarsColors } from "./algorithms/base.js";
+import { mergeSort } from "./algorithms/mergeSort.js";
+import { insertionSort } from "./algorithms/insertionSort.js";
+import { selectionSort } from "./algorithms/selectionSort.js";
+import { quickSort } from "./algorithms/quickSort.js";
 
 let controller = new AbortController();
 let sortingStarted = false;
