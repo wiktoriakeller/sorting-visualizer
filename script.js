@@ -9,7 +9,7 @@ let controller = new AbortController();
 let sortingStarted = false;
 let barsCopy = []
 
-$(document).ready(function() {
+$(document).ready(() => {
     setSpeedSliderVal();
     setSortSliderVal();
     resize();
@@ -27,7 +27,11 @@ $(document).on("input", "#sort-range", setSortSliderVal);
 function setSortSliderVal() {
     let sortRangeVal = $("#sort-range").val();
     $("#sort-slider-value").html("Bars: " + sortRangeVal);
-    
+    createRandomBars();
+}
+
+function createRandomBars() {
+    let sortRangeVal = $("#sort-range").val();
     let minHeight = 5;
     let maxHeight = 99;
 
@@ -76,7 +80,12 @@ function resize() {
     }
 }
 
-$("#sort-button").click(function() {
+$("#shuffle-button").click(() => {
+    createRandomBars();
+    resetBarsColors(document.getElementsByClassName("bar"));
+});
+
+$("#sort-button").click(() => {
     let algorithm = $("#sort-picker").val();
 
     if(sortingStarted) {
@@ -88,6 +97,7 @@ $("#sort-button").click(function() {
         $("#sort-button i").removeClass("fa-solid fa-play");
         $("#sort-button i").addClass("fa-solid fa-stop");
         $("#sort-range").prop("disabled", true);
+        $("#shuffle-button").prop("disabled", true);
 
         const bars = document.getElementsByClassName("bar");
         barsCopy = document.getElementById("bars").cloneNode(true);
@@ -101,6 +111,7 @@ function resetSettings() {
     $("#sort-button i").removeClass("fa-solid fa-stop");
     $("#sort-button i").addClass("fa-solid fa-play");
     $("#sort-range").prop("disabled", false);
+    $("#shuffle-button").prop("disabled", false);
     sortingStarted = false;
 }
 
