@@ -1,15 +1,15 @@
-import {bubbleSort} from "./algorithms/bubbleSort.js";
-import {resetBarsColors} from "./algorithms/base.js";
-import {mergeSort} from "./algorithms/mergeSort.js";
-import {insertionSort} from "./algorithms/insertionSort.js";
-import {selectionSort} from "./algorithms/selectionSort.js";
-import {quickSort} from "./algorithms/quickSort.js";
+import { bubbleSort } from "./algorithms/bubbleSort.js";
+import { resetBarsColors } from "./algorithms/base.js";
+import { mergeSort } from "./algorithms/mergeSort.js";
+import { insertionSort } from "./algorithms/insertionSort.js";
+import { selectionSort } from "./algorithms/selectionSort.js";
+import { quickSort } from "./algorithms/quickSort.js";
 
 let controller = new AbortController();
 let sortingStarted = false;
 let barsCopy = []
 
-$(document).ready(function() {
+$(document).ready(() => {
     setSpeedSliderVal();
     setSortSliderVal();
     resize();
@@ -27,7 +27,11 @@ $(document).on("input", "#sort-range", setSortSliderVal);
 function setSortSliderVal() {
     let sortRangeVal = $("#sort-range").val();
     $("#sort-slider-value").html("Bars: " + sortRangeVal);
-    
+    createRandomBars();
+}
+
+function createRandomBars() {
+    let sortRangeVal = $("#sort-range").val();
     let minHeight = 5;
     let maxHeight = 99;
 
@@ -76,7 +80,12 @@ function resize() {
     }
 }
 
-$("#sort-button").click(function() {
+$("#shuffle-button").click(() => {
+    createRandomBars();
+    resetBarsColors(document.getElementsByClassName("bar"));
+});
+
+$("#sort-button").click(() => {
     let algorithm = $("#sort-picker").val();
 
     if(sortingStarted) {
@@ -85,8 +94,10 @@ $("#sort-button").click(function() {
     }
     else if(algorithm != null) {
         sortingStarted = true;
-        $("#sort-button span").text("STOP!");
+        $("#sort-button i").removeClass("fa-solid fa-play");
+        $("#sort-button i").addClass("fa-solid fa-stop");
         $("#sort-range").prop("disabled", true);
+        $("#shuffle-button").prop("disabled", true);
 
         const bars = document.getElementsByClassName("bar");
         barsCopy = document.getElementById("bars").cloneNode(true);
@@ -97,8 +108,10 @@ $("#sort-button").click(function() {
 });
 
 function resetSettings() {
-    $("#sort-button span").text("SORT!");
+    $("#sort-button i").removeClass("fa-solid fa-stop");
+    $("#sort-button i").addClass("fa-solid fa-play");
     $("#sort-range").prop("disabled", false);
+    $("#shuffle-button").prop("disabled", false);
     sortingStarted = false;
 }
 
