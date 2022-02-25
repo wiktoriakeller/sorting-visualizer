@@ -75,16 +75,15 @@ body {
     border: none;
     border-radius: 5px;
     height: 2.7em;
-    width: 5.5em;
-}
-
-.navbar-button > span {
-    font-size: 1.3em;
-    font-family: 'Cairo', sans-serif;
+    width: 3.5em;
 }
 
 .navbar-button:hover {
     background-color: var(--navbar-icon-hover, orange);
+}
+
+.navbar-button > i {
+    font-size: 1.55em;
 }
 
 #container {

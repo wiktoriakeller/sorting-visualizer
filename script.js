@@ -85,7 +85,8 @@ $("#sort-button").click(function() {
     }
     else if(algorithm != null) {
         sortingStarted = true;
-        $("#sort-button span").text("STOP!");
+        $("#sort-button i").removeClass("fa-solid fa-play");
+        $("#sort-button i").addClass("fa-solid fa-stop");
         $("#sort-range").prop("disabled", true);
 
         const bars = document.getElementsByClassName("bar");
@@ -97,7 +98,8 @@ $("#sort-button").click(function() {
 });
 
 function resetSettings() {
-    $("#sort-button span").text("SORT!");
+    $("#sort-button i").removeClass("fa-solid fa-stop");
+    $("#sort-button i").addClass("fa-solid fa-play");
     $("#sort-range").prop("disabled", false);
     sortingStarted = false;
 }
